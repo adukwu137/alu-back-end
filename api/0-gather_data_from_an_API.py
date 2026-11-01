@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 """
 A Python script that returns an employee's TODO list progress
-using a REST API based on their employee ID.
+using urllib based on their employee ID.
 """
 
 import sys
-import requests
+import json
+import urllib.request
 
 
 if __name__ == "__main__":
@@ -15,8 +16,13 @@ if __name__ == "__main__":
         users_url = "https://jsonplaceholder.typicode.com/users/{}".format(emp_id)
         todos_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(emp_id)
 
-        user_res = requests.get(users_url).json()
-        todos_res = requests.get(todos_url).json()
+        # Fetch user data
+        with urllib.request.urlopen(users_url) as response:
+            user_res = json.loads(response.read().decode())
+
+        # Fetch todos data
+        with urllib.request.urlopen(todos_url) as response:
+            todos_res = json.loads(response.read().decode())
 
         employee_name = user_res.get("name")
         total_tasks = len(todos_res)
